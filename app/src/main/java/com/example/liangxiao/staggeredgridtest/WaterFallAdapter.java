@@ -12,47 +12,41 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-public class WaterFallAdapter extends RecyclerView.Adapter {
+public class WaterFallAdapter extends RecyclerView.Adapter<WaterFallAdapter.MyViewHolder> {
     private Context mContext;
-    private List<PersonCard> mData; //定义数据源
+    private List<String> mData; //定义数据源
 
-    public WaterFallAdapter(Context context, List<PersonCard> data) {
+    public WaterFallAdapter(Context context, List<String> data) {
         mContext = context;
         mData = data;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.image_item,parent,false);
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.image_item, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        MyViewHolder myViewHolder = (MyViewHolder) holder;
-        PersonCard personCard = mData.get(position);
-        Uri uri = Uri.parse(personCard.avatarUrl);
-        myViewHolder.mDraweeView.setImageURI(uri);
-        myViewHolder.mDraweeView.getLayoutParams().height = personCard.imgHeight;
-        myViewHolder.mDescription.setText(personCard.name);
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        String url = mData.get(position);
+        Uri uri = Uri.parse(url);
+        holder.mDraweeView.setImageURI(uri);
+        //如果竖向滑动，高度变化，横向滑动，宽度变化
+        holder.mDraweeView.getLayoutParams().width = (position % 2) * 100 + 300 + (int) (Math.random() * 300);
     }
 
     @Override
     public int getItemCount() {
-        if (mData != null){
-            return mData.size();
-        }
-        return 0;
+        return mData.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public SimpleDraweeView mDraweeView;
-        public TextView mDescription;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             mDraweeView = itemView.findViewById(R.id.image_item);
-            mDescription = itemView.findViewById(R.id.image_description);
         }
     }
 }
